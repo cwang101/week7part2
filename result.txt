@@ -1,0 +1,36 @@
+practice1
+mysql> select * from employee where name like '%n%' and salary>6000;
++----+------------+------+----------+-----------+--------+
+| id | name       | age  | gender   | companyId | salary |
++----+------------+------+----------+-----------+--------+
+|  1 | 'xiaohong' |   19 | 'female' |         1 |   7000 |
++----+------------+------+----------+-----------+--------+
+
+
+practice2
+mysql> select  employee.name,company.companyName from employee,company,(select companyId, max(salary) max_salary from employee group by companyId) b  where employee.companyId=company.id and employee.companyId=b.companyId and employee.salary=b.max_salary;
++------------+-------------+
+| name       | companyName |
++------------+-------------+
+| 'xiaoming' | 'baidu'     |
+| 'xiaohong' | 'alibaba'   |
+| 'xiaozhi'  | 'tengxun'   |
++------------+-------------+
+
+practice3
+mysql> select company.companyName,b.avg_salary from company,(select companyId, avg(salary) avg_salary from employee group by companyId order by avg_salary desc limit 1) b where company.id=b.companyId;
++-------------+------------+
+| companyName | avg_salary |
++-------------+------------+
+| 'tengxun'   |  8000.0000 |
++-------------+------------+
+
+practice4
+mysql> select employee.id,employee.name,employee.age,employee.gender,employee.companyId,employee.salary,company.companyName,b.avgsal from employee,company,(select companyId, avg(salary) avgsal from employee group by companyId) b where employee.companyId=company.id and company.id=b.companyId and employee.salary>=b.avgsal;
++----+------------+------+----------+-----------+--------+-------------+-----------+
+| id | name       | age  | gender   | companyId | salary | companyName | avgsal    |
++----+------------+------+----------+-----------+--------+-------------+-----------+
+|  0 | 'xiaoming' |   20 | 'male'   |         0 |   6000 | 'baidu'     | 5000.0000 |
+|  1 | 'xiaohong' |   19 | 'female' |         1 |   7000 | 'alibaba'   | 6500.0000 |
+|  2 | 'xiaozhi'  |   15 | 'male'   |         2 |   8000 | 'tengxun'   | 8000.0000 |
++----+------------+------+----------+-----------+--------+-------------+-----------+
